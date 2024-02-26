@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
+
+  @override
+  _MapScreenState createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  GoogleMapController? mapController;
+  Set<Marker> markers = {};
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+    setState(() {
+      markers.add(const Marker(
+        markerId: MarkerId('marker1'),
+        position: LatLng(37.7749, -122.4194),
+        infoWindow: InfoWindow(title: 'San Francisco'),
+      ));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Google Maps in Flutter')),
+      body: Expanded(
+        child: GoogleMap(
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: const CameraPosition(
+            target: LatLng(37.7749, -122.4194),
+            zoom: 12,
+          ),
+          markers: markers,
+        ),
+      ),
+    );
+  }
+}
+
+//BELOW IS DUMMY OF CGPPPt CODE WITH EXTRA CLASS AND INCLUDES PERMISSION HANDLERS
+
+// import 'package:flutter/material.dart';
+// import 'package:permission_handler/permission_handler.dart' as perm;
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:get/get.dart';
+
+// class MyPage extends StatelessWidget {
+//   final LatLng providerPosition;
+//   final LatLng userPosition;
+
+//   MyPage({required this.providerPosition, required this.userPosition});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // You can set up your Google Map here using GoogleMapsFlutter widget.
+//     // Make sure to include the necessary configurations, markers, etc.
+
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('My Map Page'),
+//       ),
+//       body: GoogleMap(
+//         initialCameraPosition: CameraPosition(
+//           target: providerPosition,
+//           zoom: 14.0,
+//         ),
+//         // Add markers, polylines, etc. for better map visualization.
+//       ),
+//     );
+//   }
+// }
+
+// Future<void> _checkLocationPermission(ServiceDetails selectedProvider) async {
+//   try {
+//     perm.PermissionStatus status =
+//         await perm.Permission.locationWhenInUse.status;
+//     print("Location Permission status: $status");
+
+//     if (status.isDenied) {
+//       print("Requesting location permission...");
+//       await perm.Permission.locationWhenInUse.request();
+//     } else {
+//       if (status.isGranted) {
+//         debugPrint("Provider Name: ${selectedProvider.providerName}");
+//         debugPrint("Coordinates: ${selectedProvider.coordinates}");
+
+//         Get.to(MyPage(
+//           providerPosition: LatLng(
+//             double.parse(selectedProvider.coordinates![0]),
+//             double.parse(selectedProvider.coordinates![1]),
+//           ),
+//           userPosition: LatLng(-0.392213, 36.958676),
+//         ));
+//       }
+//     }
+//   } catch (e) {
+//     print("Error checking or requesting location permission: $e");
+//     Get.snackbar("Info!", "Please enable location in settings!");
+//   }
+// }
